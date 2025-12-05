@@ -7,7 +7,7 @@ module.exports = function (req, res) {
 
   const now = Date.now();
 
-  // 1) 아직 start 스킬에서 신호가 나오기 전임
+  // 아직 신호가 안 나온 경우
   if (!store.buttonSentTime) {
     return res.status(200).send({
       version: "2.0",
@@ -15,7 +15,7 @@ module.exports = function (req, res) {
         outputs: [
           {
             simpleText: {
-              text: "아직 신호가 나오지 않았어요! 😅\n준비 신호 이후에 눌러주세요!"
+              text: "아직 신호가 나오지 않았어요! 😅"
             }
           }
         ]
@@ -23,40 +23,48 @@ module.exports = function (req, res) {
     });
   }
 
-  // 2) 이미 승자가 있는 경우 → 중복 처리
+  // 이미 승자 존재 → 그대로 안내
   if (store.winner) {
-    const message = `이미 ${store.winner.name}님이 1등이에요! 🏆\n반응속도: ${store.winner.time}ms`;
-
     return res.status(200).send({
       version: "2.0",
       template: {
         outputs: [
           {
-            simpleText: { text: message }
+            simpleText: {
+              text: `이미 ${store.winner.name}님이 1등이에요! 🏆\n반응속도: ${store.winner.time}ms`
+            }
           }
         ]
       }
     });
   }
 
-  // 3) 반응속도 계산
+  // 반응속도 계산
   const reactionTime = now - store.buttonSentTime;
 
-  // 4) 승자 저장
+  // 승자 기록
   store.winner = {
     id: userId,
-    name: userName || "알 수 없음",
+    name: userName || "게스트",
     time: reactionTime
   };
 
-  // 5) 유저에게 결과 출력
+  // 게임 종료 (UNLOCK)
+  store.isPlaying = false;
+  store.buttonSentTime = null;
+
+  // 자동 종료 타이머 있었으면 해제
+  if (store.timeoutId) clearTimeout(store.timeoutId);
+  store.timeoutId = null;
+
+  // 성공 메시지
   return res.status(200).send({
     version: "2.0",
     template: {
       outputs: [
         {
           simpleText: {
-            text: `🎉 ${store.winner.name}님, 1등이에요! 🎉\n\n반응속도: ${reactionTime}ms ⚡️`
+            text: `🎉 ${store.winner.name}님이 1등입니다!! 🏆\n반응속도: ${reactionTime}ms 🔥`
           }
         }
       ]
