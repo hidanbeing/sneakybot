@@ -1,6 +1,14 @@
 module.exports = {
-  buttonSentTime: null,
-  winner: null,
-  isPlaying: false,       // 게임 LOCK
-  timeoutId: null         // 자동 종료 타이머 저장용
+    globalGame: {
+        playing: false,   // 전체 게임 진행 여부
+        type: null        // "타자배틀" | "색몇개" | null
+    },
+
+    typing: {
+        sentence: null
+    },
+
+    color: {
+        answer: null
+    }
 };
