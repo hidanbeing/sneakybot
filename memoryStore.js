@@ -1,14 +1,13 @@
 module.exports = {
-    globalGame: {
-        playing: false,   // 전체 게임 진행 여부
-        type: null        // "타자배틀" | "색몇개" | null
-    },
+    currentGame: null, // 진행중인 게임 종류 ("typing" / "color")
 
     typing: {
-        sentence: null
+        sentence: "",
+        winner: null,
     },
 
     color: {
-        answer: null
+        answer: null,
+        winner: null,
     }
 };

@@ -1,41 +1,49 @@
 const memory = require("../memoryStore");
 
+// 유저 닉네임 가져오기 (없으면 ID 앞 4자리 사용)
+function getUserName(userObj) {
+    if (userObj.properties?.nickname) {
+        return userObj.properties.nickname;
+    }
+    return userObj.id.slice(0, 4) + "****";
+}
+
 function checkTyping(req, res) {
-    const userInput = req.body.userRequest.utterance;
-    const answer = memory.typing.sentence;
+    const user = req.body.userRequest.user;
+    const name = getUserName(user);
 
-    if (!memory.globalGame.playing || memory.globalGame.type !== "타자배틀") {
-        return res.send({
-            version: "2.0",
-            template: {
-                outputs: [
-                    { simpleText: { text: "❌ 현재 타자배틀이 진행 중이 아니에요!" } }
-                ]
-            }
-        });
-    }
+    const answer = req.body.userRequest.utterance.trim();
+    const correct = memory.typing.sentence;
 
-    // 정답
-    if (userInput === answer) {
-        memory.globalGame.playing = false;
-        memory.globalGame.type = null;
+    // 정답일 때
+    if (answer === correct) {
+        // 게임 종료 처리
+        memory.currentGame = null;
 
         return res.send({
             version: "2.0",
             template: {
                 outputs: [
-                    { simpleText: { text: `🎉 정답입니다!` } }
+                    {
+                        simpleText: {
+                            text: `🎉 @${name} 님 정답입니다!! 🎊`
+                        }
+                    }
                 ]
             }
         });
     }
 
-    // 오답
+    // 오답일 때
     return res.send({
         version: "2.0",
         template: {
             outputs: [
-                { simpleText: { text: `오타가 난 것 같아요! 다시 시도해주세요 ✏️` } }
+                {
+                    simpleText: {
+                        text: "오타가 난 것 같아요! 다시 시도해보세요 ✏️"
+                    }
+                }
             ]
         }
     });
