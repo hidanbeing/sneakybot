@@ -5,7 +5,8 @@ module.exports = {
     color: { answer: null },
     picture: { answer: null, image: null },
 
-    rooms: {}   // ⭐ 방별 랭킹 저장
+    rooms: {},   // ⭐ 방별 랭킹 저장
+    userRoomMap: {}  
 };
 
 // 초기화 함수

@@ -1,11 +1,21 @@
-// utils/user.js
+const memory = require("../memoryStore");
+
 function getRoomId(req) {
-    return req.body.userRequest?.room?.id || "default_room";
+    const userId = req.body.userRequest?.user?.id;
+
+    if (!memory.userRoomMap) memory.userRoomMap = {};
+
+    // 최초 요청이면 room 자동 생성
+    if (!memory.userRoomMap[userId]) {
+        memory.userRoomMap[userId] = "room_" + Date.now();
+    }
+
+    return memory.userRoomMap[userId];
 }
 
-function getUserName(user) {
-    if (user.properties?.nickname) return user.properties.nickname;
-    return user.id.slice(0, 4) + "****";
+function getUserName(userObj) {
+    if (userObj.properties?.nickname) return userObj.properties.nickname;
+    return userObj.id.slice(0, 4) + "****";
 }
 
 module.exports = { getRoomId, getUserName };

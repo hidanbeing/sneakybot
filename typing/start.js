@@ -11,6 +11,7 @@ function startTypingBattle(req, res) {
     const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
 
     memory.currentGame = "typing";
+
     memory.typing.sentence = randomSentence;
     memory.typing.winner = null;
 
@@ -20,7 +21,8 @@ function startTypingBattle(req, res) {
             outputs: [{
                 simpleText: {
                     text:
-`타자배틀을 시작합니다! ✨
+`⌨️ 타자배틀을 시작합니다!
+
 아래 문장을 가장 먼저 정확하게 입력해주세요! 🏁
 
 👉 "${randomSentence}"`
