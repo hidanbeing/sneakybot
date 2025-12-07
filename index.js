@@ -94,6 +94,13 @@ app.post("/api/debug/room", (req, res) => {
     return roomInfo(req, res);
 });
 
+// 랭킹 API (게임별 분리)
+const { rankingTyping, rankingColor, rankingPicture } = require("./ranking/rankController");
+
+app.post("/api/ranking/typing", rankingTyping);
+app.post("/api/ranking/color", rankingColor);
+app.post("/api/ranking/picture", rankingPicture);
+
 
 // ---------------- Fallback ----------------
 app.use((req, res) => {
