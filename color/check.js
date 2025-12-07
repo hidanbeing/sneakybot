@@ -1,3 +1,5 @@
+const { addScore } = require("../utils/ranking");
+
 const memory = require("../memoryStore");
 
 function checkColorGame(req, res) {
@@ -8,6 +10,7 @@ function checkColorGame(req, res) {
     const correct = memory.color.answer;
 
     if (guess === correct) {
+        addScore(req, "typing");
         memory.currentGame = null;
 
         return res.send({

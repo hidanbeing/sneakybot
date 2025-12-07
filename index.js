@@ -81,6 +81,12 @@ app.post("/api/picture/check", (req, res) => {
     return checkPictureQuiz(req, res);
 });
 
+const { rankingApi } = require("./ranking/getRanking");
+
+// 랭킹 조회
+app.post("/api/ranking", (req, res) => {
+    return rankingApi(req, res);
+});
 
 // ---------------- Fallback ----------------
 app.use((req, res) => {

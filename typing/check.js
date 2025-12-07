@@ -1,4 +1,5 @@
 const memory = require("../memoryStore");
+const { addScore } = require("../utils/ranking");
 
 // 유저 닉네임 가져오기 (없으면 ID 앞 4자리 사용)
 function getUserName(userObj) {
@@ -18,6 +19,7 @@ function checkTyping(req, res) {
     // 정답일 때
     if (answer === correct) {
         // 게임 종료 처리
+        addScore(req, "typing");
         memory.currentGame = null;
 
         return res.send({

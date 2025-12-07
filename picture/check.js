@@ -1,3 +1,5 @@
+const { addScore } = require("../utils/ranking");
+
 const memory = require("../memoryStore");
 
 function checkPictureQuiz(req, res) {
@@ -12,6 +14,7 @@ function checkPictureQuiz(req, res) {
     }
 
     if (userAnswer === correct) {
+        addScore(req, "typing");
         memory.currentGame = null;
 
         return res.send({
