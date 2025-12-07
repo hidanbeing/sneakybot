@@ -54,17 +54,6 @@ const pictureQuizSet = [
 ];
 
 function startPictureQuiz(req, res) {
-    // 문제 없으면 안내
-    if (pictureQuizSet.length === 0) {
-        return res.send({
-            version: "2.0",
-            template: {
-                outputs: [
-                    { simpleText: { text: "❗ 현재 등록된 그림퀴즈 문제가 없습니다!" } }
-                ]
-            }
-        });
-    }
 
     const quiz = pictureQuizSet[Math.floor(Math.random() * pictureQuizSet.length)];
 

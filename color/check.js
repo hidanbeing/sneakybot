@@ -1,16 +1,17 @@
-const { addScore } = require("../utils/ranking");
-
 const memory = require("../memoryStore");
+const { addScore } = require("../utils/ranking");
+const { getUserName } = require("../utils/user");
 
 function checkColorGame(req, res) {
     const user = req.body.userRequest.user;
-    const name = user.properties?.nickname || user.id.slice(0,4)+"****";
-    
+    const name = getUserName(user);
+
     const guess = parseInt(req.body.userRequest.utterance);
     const correct = memory.color.answer;
 
+    // 정답 체크
     if (guess === correct) {
-        addScore(req, "typing");
+        addScore(req, "color");   // 🔥 color 점수 +1
         memory.currentGame = null;
 
         return res.send({
@@ -25,11 +26,14 @@ function checkColorGame(req, res) {
         });
     }
 
+    // 오답
     return res.send({
         version: "2.0",
         template: {
             outputs: [{
-                simpleText: { text: "틀렸어요! 다시 시도해보세요 😢" }
+                simpleText: { 
+                    text: "틀렸어요! 다시 시도해보세요 😢" 
+                }
             }]
         }
     });
