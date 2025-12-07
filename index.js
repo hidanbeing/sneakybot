@@ -88,6 +88,13 @@ app.post("/api/ranking", (req, res) => {
     return rankingApi(req, res);
 });
 
+const { roomInfo } = require("./debug/roomInfo");
+// 🧪 방정보 디버그
+app.post("/api/debug/room", (req, res) => {
+    return roomInfo(req, res);
+});
+
+
 // ---------------- Fallback ----------------
 app.use((req, res) => {
     res.status(404).send({
@@ -101,7 +108,9 @@ app.use((req, res) => {
 });
 
 
+
 // ---------------- SERVER RUN ----------------
 app.listen(3000, () => {
     console.log("🔥 Kakao Game Skill Server running on port 3000");
 });
+
