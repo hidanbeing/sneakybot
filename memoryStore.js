@@ -14,3 +14,15 @@ module.exports = {
         image: null
     }
 };
+
+// 게임 전체 초기화 함수
+module.exports.resetGame = function () {
+    module.exports.currentGame = null;
+
+    module.exports.typing.sentence = null;
+
+    module.exports.color.answer = null;
+
+    module.exports.picture.answer = null;
+    module.exports.picture.image = null;
+};

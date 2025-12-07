@@ -16,6 +16,8 @@ const { checkColorGame } = require("./color/check");
 const { startPictureQuiz } = require("./picture/start");
 const { checkPictureQuiz } = require("./picture/check");
 
+// 종료 스킬
+const { stopGame } = require("./stopGame");
 
 // ----- 게임 시작 요청 시 공통 중복 체크 -----
 function blockIfGameRunning(game, res) {
@@ -36,46 +38,45 @@ function blockIfGameRunning(game, res) {
 
 
 // --------------------------------------
-//                 API ROUTES
+//             API ROUTES
 // --------------------------------------
 
-// ✅ 타자배틀 시작
+// ⛔ 게임 종료
+app.post("/api/game/stop", (req, res) => {
+    return stopGame(req, res);
+});
+
+// ⌨️ 타자배틀
 app.post("/api/typing/start", (req, res) => {
     const block = blockIfGameRunning("typing", res);
     if (block) return;
-
     return startTypingBattle(req, res);
 });
 
-// ⌨️ 타자배틀 정답 체크
 app.post("/api/typing/check", (req, res) => {
     return checkTyping(req, res);
 });
 
 
-// 🎨 색몇개 시작
+// 🎨 색몇개
 app.post("/api/color/start", (req, res) => {
     const block = blockIfGameRunning("color", res);
     if (block) return;
-
     return startColorGame(req, res);
 });
 
-// 🎨 색몇개 정답 체크
 app.post("/api/color/check", (req, res) => {
     return checkColorGame(req, res);
 });
 
 
-// 🖼 그림퀴즈 시작
+// 🖼 그림퀴즈
 app.post("/api/picture/start", (req, res) => {
     const block = blockIfGameRunning("picture", res);
     if (block) return;
-
     return startPictureQuiz(req, res);
 });
 
-// 🖼 그림퀴즈 정답 체크
 app.post("/api/picture/check", (req, res) => {
     return checkPictureQuiz(req, res);
 });
