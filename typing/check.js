@@ -1,12 +1,6 @@
 const memory = require("../memoryStore");
-
-// 유저 닉네임 가져오기 (없으면 ID 앞 4자리 사용)
-function getUserName(userObj) {
-    if (userObj.properties?.nickname) {
-        return userObj.properties.nickname;
-    }
-    return userObj.id.slice(0, 4) + "****";
-}
+const { addScore } = require("../utils/ranking");
+const { getUserName } = require("../utils/user");
 
 function checkTyping(req, res) {
     const user = req.body.userRequest.user;
@@ -15,10 +9,10 @@ function checkTyping(req, res) {
     const answer = req.body.userRequest.utterance.trim();
     const correct = memory.typing.sentence;
 
-    // 정답일 때
+    // 🔥 정답일 때
     if (answer === correct) {
-        // 게임 종료 처리
-        memory.currentGame = null;
+        addScore(req, "typing");   // 점수 +1
+        memory.currentGame = null; // 게임 종료
 
         return res.send({
             version: "2.0",
@@ -34,7 +28,7 @@ function checkTyping(req, res) {
         });
     }
 
-    // 오답일 때
+    // ❌ 오답일 때
     return res.send({
         version: "2.0",
         template: {
