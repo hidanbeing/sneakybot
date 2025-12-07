@@ -12,6 +12,10 @@ const { checkTyping } = require("./typing/check");
 const { startColorGame } = require("./color/start");
 const { checkColorGame } = require("./color/check");
 
+// 그림퀴즈
+const { startPictureQuiz } = require("./picture/start");
+const { checkPictureQuiz } = require("./picture/check");
+
 
 // ----- 게임 시작 요청 시 공통 중복 체크 -----
 function blockIfGameRunning(game, res) {
@@ -31,43 +35,66 @@ function blockIfGameRunning(game, res) {
 }
 
 
-// ---------------- API ROUTES ----------------
+// --------------------------------------
+//                 API ROUTES
+// --------------------------------------
 
-// 타자배틀 시작
+// ✅ 타자배틀 시작
 app.post("/api/typing/start", (req, res) => {
     const block = blockIfGameRunning("typing", res);
     if (block) return;
+
     return startTypingBattle(req, res);
 });
 
-// 타자배틀 정답 체크
+// ⌨️ 타자배틀 정답 체크
 app.post("/api/typing/check", (req, res) => {
     return checkTyping(req, res);
 });
 
-// 색몇개 시작
+
+// 🎨 색몇개 시작
 app.post("/api/color/start", (req, res) => {
     const block = blockIfGameRunning("color", res);
     if (block) return;
+
     return startColorGame(req, res);
 });
 
-// 색몇개 정답 체크
+// 🎨 색몇개 정답 체크
 app.post("/api/color/check", (req, res) => {
     return checkColorGame(req, res);
 });
 
 
-// fallback
+// 🖼 그림퀴즈 시작
+app.post("/api/picture/start", (req, res) => {
+    const block = blockIfGameRunning("picture", res);
+    if (block) return;
+
+    return startPictureQuiz(req, res);
+});
+
+// 🖼 그림퀴즈 정답 체크
+app.post("/api/picture/check", (req, res) => {
+    return checkPictureQuiz(req, res);
+});
+
+
+// ---------------- Fallback ----------------
 app.use((req, res) => {
     res.status(404).send({
         version: "2.0",
         template: {
-            outputs: [{ simpleText: { text: "❌ 잘못된 스킬 경로입니다." } }]
+            outputs: [
+                { simpleText: { text: "❌ 잘못된 스킬 경로입니다." } }
+            ]
         }
     });
 });
 
+
+// ---------------- SERVER RUN ----------------
 app.listen(3000, () => {
     console.log("🔥 Kakao Game Skill Server running on port 3000");
 });

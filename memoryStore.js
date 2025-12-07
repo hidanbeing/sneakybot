@@ -1,13 +1,16 @@
 module.exports = {
-    currentGame: null, // 진행중인 게임 종류 ("typing" / "color")
+    currentGame: null,
 
     typing: {
-        sentence: "",
-        winner: null,
+        sentence: null
     },
 
     color: {
+        answer: null
+    },
+
+    picture: {
         answer: null,
-        winner: null,
+        image: null
     }
 };
