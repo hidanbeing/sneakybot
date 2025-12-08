@@ -1,7 +1,7 @@
 const memory = require("../memoryStore");
+const { colors } = require("../gameData/colors"); // ← 외부 데이터 불러오기
 
 function startColorGame(req, res) {
-    const colors = ["🔴", "🔵", "🟢", "🟡"];
     const list = [];
 
     // 랜덤 색 10개 생성
@@ -13,15 +13,18 @@ function startColorGame(req, res) {
     const targetColor = colors[Math.floor(Math.random() * colors.length)];
     const answer = list.filter(c => c === targetColor).length;
 
+    // 게임 상태 저장
     memory.currentGame = "color";
     memory.color.answer = answer;
+    memory.color.target = targetColor; // ← 필요하면 저장해도 됨
 
     return res.send({
         version: "2.0",
         template: {
-            outputs: [{
-                simpleText: {
-                    text:
+            outputs: [
+                {
+                    simpleText: {
+                        text:
 `🎨 색몇개 게임 시작!
 
 아래 목록에서 '${targetColor}' 는 몇 개인가요?
@@ -29,8 +32,9 @@ function startColorGame(req, res) {
 ${list.join(" ")}
 
 숫자로만 입력해주세요!`
+                    }
                 }
-            }]
+            ]
         }
     });
 }
