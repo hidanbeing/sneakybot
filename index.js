@@ -2,13 +2,20 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+// ----------------------
+//       MEMORY STORE
+// ----------------------
 const memory = require("./memoryStore");
+
+// ----------------------
+//       GAME LOGIC
+// ----------------------
 
 // 타자배틀
 const { startTypingBattle } = require("./typing/start");
 const { checkTyping } = require("./typing/check");
 
-// 색맞추기
+// 색몇개
 const { startColorGame } = require("./color/start");
 const { checkColorGame } = require("./color/check");
 
@@ -19,7 +26,20 @@ const { checkPictureQuiz } = require("./picture/check");
 // 종료 스킬
 const { stopGame } = require("./stopGame");
 
-// ----- 게임 시작 요청 시 공통 중복 체크 -----
+// 디버그
+const { roomInfo } = require("./debug/roomInfo");
+
+// 랭킹 API (게임별)
+const {
+    rankingTyping,
+    rankingColor,
+    rankingPicture
+} = require("./ranking/rankController");
+
+
+// ----------------------
+//  GAME RUNNING CHECKER
+// ----------------------
 function blockIfGameRunning(game, res) {
     if (memory.currentGame && memory.currentGame !== game) {
         return res.send({
@@ -27,7 +47,7 @@ function blockIfGameRunning(game, res) {
             template: {
                 outputs: [{
                     simpleText: {
-                        text: `⚠️ 현재 '${memory.currentGame}' 게임이 진행 중입니다!\n먼저 게임을 마쳐주세요 🎮`
+                        text: `⚠️ 현재 '${memory.currentGame}' 게임이 진행 중입니다!\n먼저 종료해주세요 🎮`
                     }
                 }]
             }
@@ -37,72 +57,55 @@ function blockIfGameRunning(game, res) {
 }
 
 
-// --------------------------------------
-//             API ROUTES
-// --------------------------------------
+
+// ----------------------
+//        API ROUTES
+// ----------------------
 
 // ⛔ 게임 종료
-app.post("/api/game/stop", (req, res) => {
-    return stopGame(req, res);
-});
+app.post("/api/game/stop", stopGame);
+
 
 // ⌨️ 타자배틀
 app.post("/api/typing/start", (req, res) => {
     const block = blockIfGameRunning("typing", res);
     if (block) return;
-    return startTypingBattle(req, res);
+    startTypingBattle(req, res);
 });
-
-app.post("/api/typing/check", (req, res) => {
-    return checkTyping(req, res);
-});
+app.post("/api/typing/check", checkTyping);
 
 
 // 🎨 색몇개
 app.post("/api/color/start", (req, res) => {
     const block = blockIfGameRunning("color", res);
     if (block) return;
-    return startColorGame(req, res);
+    startColorGame(req, res);
 });
-
-app.post("/api/color/check", (req, res) => {
-    return checkColorGame(req, res);
-});
+app.post("/api/color/check", checkColorGame);
 
 
 // 🖼 그림퀴즈
 app.post("/api/picture/start", (req, res) => {
     const block = blockIfGameRunning("picture", res);
     if (block) return;
-    return startPictureQuiz(req, res);
+    startPictureQuiz(req, res);
 });
+app.post("/api/picture/check", checkPictureQuiz);
 
-app.post("/api/picture/check", (req, res) => {
-    return checkPictureQuiz(req, res);
-});
 
-const { rankingApi } = require("./ranking/rankingApi");
-
-// 랭킹 조회
-app.post("/api/ranking", (req, res) => {
-    return rankingApi(req, res);
-});
-
-const { roomInfo } = require("./debug/roomInfo");
-// 🧪 방정보 디버그
-app.post("/api/debug/room", (req, res) => {
-    return roomInfo(req, res);
-});
-
-// 랭킹 API (게임별 분리)
-const { rankingTyping, rankingColor, rankingPicture } = require("./ranking/rankController");
-
+// 🏆 랭킹 (게임별)
 app.post("/api/ranking/typing", rankingTyping);
 app.post("/api/ranking/color", rankingColor);
 app.post("/api/ranking/picture", rankingPicture);
 
 
-// ---------------- Fallback ----------------
+// 🧪 디버그 API
+app.post("/api/debug/room", roomInfo);
+
+
+// ----------------------
+//       FALLBACK
+// ----------------------
 app.use((req, res) => {
     res.status(404).send({
         version: "2.0",
@@ -115,9 +118,9 @@ app.use((req, res) => {
 });
 
 
-
-// ---------------- SERVER RUN ----------------
+// ----------------------
+//      SERVER START
+// ----------------------
 app.listen(3000, () => {
     console.log("🔥 Kakao Game Skill Server running on port 3000");
 });
-
