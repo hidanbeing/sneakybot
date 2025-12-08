@@ -1,8 +1,10 @@
 const memory = require("../memoryStore");
 const { addScore } = require("../utils/ranking");
 const { getUserName } = require("../utils/user");
+const { registerUser } = require("../utils/user");
 
 function checkPictureQuiz(req, res) {
+    registerUser(req);
     const userAnswer = req.body.userRequest.utterance.trim();
     const correct = memory.picture.answer;
 

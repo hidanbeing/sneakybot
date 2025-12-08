@@ -28,7 +28,7 @@ function sendRanking(req, res, game) {
 
     let text = `🏆 ${game} 랭킹 🏆\n\n`;
     list.forEach((u, idx) => {
-        text += `${idx + 1}위 : ${u.name} (${u.score}점)\n`;
+        text += `${idx + 1}위 : @${u.name} (${u.score}점)\n`;
     });
 
     return res.send({

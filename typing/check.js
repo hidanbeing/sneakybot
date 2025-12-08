@@ -1,8 +1,10 @@
 const memory = require("../memoryStore");
 const { addScore } = require("../utils/ranking");
 const { getUserName } = require("../utils/user");
+const { registerUser } = require("../utils/user");
 
 function checkTyping(req, res) {
+    registerUser(req);
     const user = req.body.userRequest.user;
     const name = getUserName(user);
 
