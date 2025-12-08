@@ -1,5 +1,5 @@
 const memory = require("../memoryStore");
-const { colors } = require("../gameData/colors"); // ← 외부 데이터 불러오기
+const { colors } = require("../gameData/colorSets"); // ← 외부 데이터 불러오기
 
 function startColorGame(req, res) {
     const list = [];
