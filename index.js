@@ -43,20 +43,34 @@ const { checkFortune } = require("./fortune/check");
 //  GAME RUNNING CHECKER
 // ----------------------
 function blockIfGameRunning(game, res) {
+  // 같은 게임이면 막기
+  if (memory.currentGame === game) {
+    return res.send({
+      version: "2.0",
+      template: {
+        outputs: [{
+          simpleText: {
+            text: `⚠️ '${game}' 게임이 이미 진행 중입니다!\n먼저 종료해주세요 🎮`
+          }
+        }]
+      }
+    });
+  }
+
+  // 다른 게임도 막기
   if (memory.currentGame && memory.currentGame !== game) {
     return res.send({
       version: "2.0",
       template: {
-        outputs: [
-          {
-            simpleText: {
-              text: `⚠️ 현재 '${memory.currentGame}' 게임이 진행 중입니다!\n먼저 종료해주세요 🎮`,
-            },
-          },
-        ],
-      },
+        outputs: [{
+          simpleText: {
+            text: `⚠️ 현재 '${memory.currentGame}' 게임이 진행 중입니다!\n먼저 종료해주세요 🎮`
+          }
+        }]
+      }
     });
   }
+
   return null;
 }
 
