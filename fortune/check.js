@@ -1,5 +1,6 @@
 const fortuneData = require("../gameData/fortuneData");
 const memory = require("../memoryStore");
+const { getUserName } = require("../utils/user");
 
 function getRandomFortune() {
   const idx = Math.floor(Math.random() * fortuneData.length);
@@ -7,23 +8,27 @@ function getRandomFortune() {
 }
 
 function checkFortune(req, res) {
-  const userId = req.body.userRequest.user.id;
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const user = req.body.userRequest.user;
+  const name = getUserName(user); // ← @단비 같은 이름 추출
+  const userId = user.id;
 
-  // dailyFortune이 없으면 초기화
+  const today = new Date().toISOString().slice(0, 10);
+
   if (!memory.dailyFortune[userId]) {
     memory.dailyFortune[userId] = {};
   }
 
-  // 오늘 운세가 이미 존재하면 그걸 그대로 리턴
+  // 이미 오늘 운세가 존재할 경우
   if (memory.dailyFortune[userId][today]) {
+    const fortune = memory.dailyFortune[userId][today];
     return res.send({
       version: "2.0",
       template: {
         outputs: [
           {
             simpleText: {
-              text: `🔮 ${memory.dailyFortune[userId][today]}`,
+              // ⭐ 여기서 "@이름 운세 내용" 출력!
+              text: `🔮 @${name} ${fortune}`,
             },
           },
         ],
@@ -31,7 +36,7 @@ function checkFortune(req, res) {
     });
   }
 
-  // 없으면 새 랜덤 운세 저장
+  // 오늘 처음 뽑는 운세라면
   const todayFortune = getRandomFortune();
   memory.dailyFortune[userId][today] = todayFortune;
 
@@ -41,7 +46,7 @@ function checkFortune(req, res) {
       outputs: [
         {
           simpleText: {
-            text: `🔮 ${todayFortune}`,
+            text: `🔮 @${name} ${todayFortune}`,
           },
         },
       ],
