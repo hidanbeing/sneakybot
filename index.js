@@ -102,6 +102,9 @@ app.post("/api/ranking/picture", rankingPicture);
 // 🧪 디버그 API
 app.post("/api/debug/room", roomInfo);
 
+app.get("/api/ping", (req, res) => {
+    res.send("OK");
+});
 
 // ----------------------
 //       FALLBACK
