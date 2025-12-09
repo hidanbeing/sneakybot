@@ -39,6 +39,11 @@ const {
 // 운세
 const { checkFortune } = require("./fortune/check");
 
+// 폴백
+const { fallback } = require("./fallback/fallback");
+
+
+
 // ----------------------
 //  GAME RUNNING CHECKER
 // ----------------------
@@ -116,6 +121,10 @@ app.post("/api/debug/room", roomInfo);
 app.get("/api/ping", (req, res) => {
     res.send("OK");
 });
+
+// 폴백
+app.post("/api/fallback", fallback);
+
 
 // 🔮 운세 실행
 app.post("/api/fortune/run", checkFortune);
