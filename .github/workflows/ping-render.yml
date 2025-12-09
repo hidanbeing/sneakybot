@@ -1,0 +1,14 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # 10분마다 실행
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Server
+        run: |
+          curl -s https://kakao-game-skill-server.onrender.com/api/ping || true
