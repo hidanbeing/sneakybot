@@ -42,34 +42,47 @@ const { checkFortune } = require("./fortune/check");
 // 폴백
 const { fallback } = require("./fallback/fallback");
 
+// 헛소리
+const { sendNonsense } = require("./nonsense/start");
 
 
 // ----------------------
 //  GAME RUNNING CHECKER
 // ----------------------
+const GAME_NAMES = {
+  typing: "타자배틀",
+  color: "색몇개",
+  picture: "그림퀴즈"
+};
+
+// ----------------------
+//  GAME RUNNING CHECKER
+// ----------------------
 function blockIfGameRunning(game, res) {
-  // 같은 게임이면 막기
-  if (memory.currentGame === game) {
+  const current = memory.currentGame;
+
+  // 이미 같은 게임 실행 중
+  if (current === game) {
     return res.send({
       version: "2.0",
       template: {
         outputs: [{
           simpleText: {
-            text: `⚠️ '${game}' 게임이 이미 진행 중입니다!\n먼저 종료해주세요 🎮`
+            text: `⚠️ '${GAME_NAMES[game]}' 게임이 이미 진행 중입니다!\n먼저 종료해주세요 🎮`
           }
         }]
       }
     });
   }
 
-  // 다른 게임도 막기
-  if (memory.currentGame && memory.currentGame !== game) {
+  // 다른 게임 실행 중
+  if (current && current !== game) {
     return res.send({
       version: "2.0",
       template: {
         outputs: [{
           simpleText: {
-            text: `⚠️ 현재 '${memory.currentGame}' 게임이 진행 중입니다!\n먼저 종료해주세요 🎮`
+            text: `⚠️ 현재 '${GAME_NAMES[current]}' 게임이 진행 중입니다!\n먼저 종료해주세요 🎮`
           }
         }]
       }
@@ -128,6 +141,9 @@ app.post("/api/fallback", fallback);
 
 // 🔮 운세 실행
 app.post("/api/fortune/run", checkFortune);
+
+
+app.post("/api/nonsense", sendNonsense);
 
 // ----------------------
 //       FALLBACK
